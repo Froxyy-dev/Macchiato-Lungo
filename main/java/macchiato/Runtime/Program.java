@@ -56,4 +56,25 @@ public class Program {
             System.out.println("Program execution failed.");
         }
     }
+
+    public String testRun() {
+        //Stos ramek ze zmiennymi widocznymi w danym bloku.
+        ArrayDeque<Context> contexts = new ArrayDeque<>();
+        contexts.add(new Context());
+
+        Tester tester = new Tester();
+        String result;
+
+        // Przechwytujemy błąd wykonania.
+        try {
+            tester.executeCommand(block, contexts);
+            contexts.removeLast();
+            result = tester.getResult();
+        }
+        catch (MacchiatoException macchiatoException) {
+            result = tester.getResult();
+        }
+
+        return result;
+    }
 }
