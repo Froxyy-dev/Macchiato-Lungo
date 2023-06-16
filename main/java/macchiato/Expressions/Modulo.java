@@ -23,4 +23,8 @@ public class Modulo extends BinaryExpression {
     protected void printOperatorCharacter() {
         System.out.print('%');
     }
+
+    public static Modulo of(Expression operand1, Expression operand2) {
+        return new Modulo(operand1, operand2);
+    }
 }

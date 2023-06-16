@@ -15,4 +15,8 @@ public class Multiplication extends BinaryExpression {
     protected void printOperatorCharacter() {
         System.out.print('*');
     }
+
+    public static Multiplication of(Expression operand1, Expression operand2) {
+        return new Multiplication(operand1, operand2);
+    }
 }

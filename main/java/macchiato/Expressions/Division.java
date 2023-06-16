@@ -23,4 +23,8 @@ public class Division extends BinaryExpression {
     protected void printOperatorCharacter() {
         System.out.print('/');
     }
+
+    public static Division of(Expression operand1, Expression operand2) {
+        return new Division(operand1, operand2);
+    }
 }

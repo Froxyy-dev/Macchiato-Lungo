@@ -15,4 +15,8 @@ public class Addition extends BinaryExpression {
     protected void printOperatorCharacter() {
         System.out.print('+');
     }
+
+    public static Addition of(Expression operand1, Expression operand2) {
+        return new Addition(operand1, operand2);
+    }
 }

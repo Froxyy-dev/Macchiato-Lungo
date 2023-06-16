@@ -15,4 +15,8 @@ public class Subtraction extends BinaryExpression {
     protected void printOperatorCharacter() {
         System.out.print('-');
     }
+
+    public static Subtraction of(Expression operand1, Expression operand2) {
+        return new Subtraction(operand1, operand2);
+    }
 }

@@ -26,4 +26,8 @@ public class Constant extends Expression {
             System.out.print(")");
         }
     }
+
+    public static Constant of(int value) {
+        return new Constant(value);
+    }
 }

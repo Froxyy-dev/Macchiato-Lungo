@@ -20,4 +20,8 @@ public class VariableExpression extends Expression {
     public void print() {
         System.out.print(variable);
     }
+
+    public static VariableExpression named(char variable) {
+        return new VariableExpression(variable);
+    }
 }
