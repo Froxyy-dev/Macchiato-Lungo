@@ -1,6 +1,7 @@
 package macchiato.Runtime;
 
 import macchiato.Commands.Command;
+import macchiato.Context.Context;
 import macchiato.Exceptions.MacchiatoException;
 import macchiato.Context.VariableFrame;
 
@@ -24,12 +25,13 @@ public class Debugger extends Contractor{
     }
 
     @Override
-    public void executeEndBlock(ArrayDeque<VariableFrame> variableFrames) {
-        // Dopóki nie otrzymaliśmy komendy "continue" oraz liczba kroków do 
+    public void executeEndBlock(ArrayDeque<Context> contexts)
+            throws MacchiatoException {
+        // Dopóki nie otrzymaliśmy komendy "continue" oraz liczba kroków do
         // wykonania jest równa 0, oczekujemy na komendy.
         while (stepsToMake == 0 && !continueRequest) {
             System.out.println("end block");
-            getDebuggerCommand(variableFrames);
+            getDebuggerCommand(contexts);
         }
 
         // Zmniejszamy liczbę instrukcji, które mamy wykonać.
@@ -38,35 +40,35 @@ public class Debugger extends Contractor{
         // Zdejmujemy ze stosu ostatnią ramkę i przepisujemy zmienne, które
         // zostały w niej zmienione (ale nie zadeklarowane) do przedostaniej
         // ramki.
-        VariableFrame lastFrame = variableFrames.removeLast();
-        variableFrames.getLast().rewrite(lastFrame);
+        Context lastContext = contexts.removeLast();
+        contexts.getLast().rewrite(lastContext);
 
         // Sprawdzamy, czy właśnie wykonaliśmy ostatni blok, jeśli tak to
         // wypisujemy końcowe wartościowanie zmiennych na standardowe wyjście.
-        if (variableFrames.size() == 1) {
-            System.out.println("Final variable values:");
-            System.out.println(lastFrame);
+        if (contexts.size() == 1) {
+            System.out.println("Program ended.");
+            System.out.println(lastContext);
         }
     }
 
     @Override
     public void executeCommand(Command command,
-           ArrayDeque<VariableFrame> variableFrames) throws MacchiatoException {
+                               ArrayDeque<Context> contexts) throws MacchiatoException {
         // Dopóki nie otrzymaliśmy komendy "continue" oraz liczba kroków do
         // wykonania jest równa 0, oczekujemy na komendy.
         while (stepsToMake == 0 && !continueRequest) {
             command.print();
-            getDebuggerCommand(variableFrames);
+            getDebuggerCommand(contexts);
         }
 
         // Zmniejszamy liczbę instrukcji, które mamy wykonać.
         stepsToMake--;
 
         try {
-            command.execute(variableFrames, this);
+            command.execute(contexts, this);
         }
         catch (MacchiatoException macchiatoException) {
-            // Sprawdzamy czy wyjątek został już obsłużony, jak tak to 
+            // Sprawdzamy czy wyjątek został już obsłużony, jak tak to
             // rzucamy go ponownie.
             if (errorHandled) {
                 throw macchiatoException;
@@ -82,9 +84,7 @@ public class Debugger extends Contractor{
             command.print();
 
             // 3. Wypisujemy wartościowanie zmiennych widocznych w bloku.
-            System.out.println("Variable values in a block which caused an " +
-                    "exception: ");
-            System.out.println(variableFrames.getLast());
+            System.out.println(contexts.getLast().toString());
 
             // 4. Ustawiamy flagę w przypadku wystąpienia błędu i rzucamy 
             // wyjątek.
@@ -94,7 +94,8 @@ public class Debugger extends Contractor{
     }
 
     // Funkcja czeka na komendę debuggera.
-    private void getDebuggerCommand(ArrayDeque<VariableFrame> variableFrames) {
+    private void getDebuggerCommand(ArrayDeque<Context> contexts)
+            throws MacchiatoException {
         while (scanner.hasNext()) {
             char command = scanner.next().charAt(0);
             int number = 0;
@@ -109,40 +110,51 @@ public class Debugger extends Contractor{
                 continue;
             }
 
-            switch (command) {
-                case 'c' -> {
-                    // Ustawiamy flagę informującą o komendzie continue.
-                    continueRequest = true;
-                    return;
-                }
-                case 's' -> {
-                    // Ustawiamy ilość kroków, która była równa 0.
-                    stepsToMake = number;
-                    return;
-                }
-                case 'd' -> {
-                    if (number + 1 >= variableFrames.size()) {
-                        System.out.println("Number is greater than " +
-                                           "number of nested blocks.");
-                    }
-                    else {
-                        ArrayDeque<VariableFrame> newArrayDeque =
-                                variableFrames.clone();
+            executeDebuggerCommand(command, number, contexts);
 
-                        for (int i = 0; i < number; i++) {
-                            newArrayDeque.removeLast();
-                        }
-
-                        System.out.println("Variable values:");
-                        System.out.println(newArrayDeque.getLast());
-                    }
-                }
-                case 'e' -> {
-                    System.out.println("Debugger ended successfully.");
-                    System.exit(0);
-                }
-                default -> System.out.println("Incorrect debugger command.");
+            if (continueRequest || stepsToMake > 0) {
+                return;
             }
+        }
+    }
+
+    public void executeDebuggerCommand(char command, int number,
+                                       ArrayDeque<Context> contexts)
+            throws MacchiatoException {
+        switch (command) {
+            case 'c' -> {
+                // Ustawiamy flagę informującą o komendzie continue.
+                continueRequest = true;
+            }
+            case 's' -> {
+                // Ustawiamy ilość kroków, która była równa 0.
+                stepsToMake = number;
+            }
+            case 'd' -> {
+                display(number, contexts);
+            }
+            case 'e' -> {
+                System.out.println("Debugger ended successfully.");
+                System.exit(0);
+            }
+            default -> System.out.println("Incorrect debugger command.");
+        }
+    }
+
+    public void display(int number, ArrayDeque<Context> contexts) {
+        if (number + 1 >= contexts.size()) {
+            System.out.println("Number is greater than " +
+                    "number of nested blocks.");
+        }
+        else {
+            ArrayDeque<Context> newArrayDeque = contexts.clone();
+
+            for (int i = 0; i < number; i++) {
+                Context lastContext = newArrayDeque.removeLast();
+                newArrayDeque.getLast().rewrite(lastContext);
+            }
+
+            System.out.println(newArrayDeque.getLast());
         }
     }
 

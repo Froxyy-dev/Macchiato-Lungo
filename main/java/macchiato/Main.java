@@ -4,7 +4,7 @@ import macchiato.Commands.Instructions.*;
 import macchiato.Commands.Declarations.VariableDeclaration;
 import macchiato.Expressions.*;
 
-import macchiato.Helpers.Program;
+import macchiato.Runtime.Program;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,7 +15,7 @@ public class Main {
         // program.runWithDebugger() -> uruchomienie z debuggerem
 
         // Program z tresci zadania zaliczeniowego.
-
+        /*
         VariableExpression n = new VariableExpression('n');
         VariableExpression k = new VariableExpression('k');
         VariableExpression p = new VariableExpression('p');
@@ -76,5 +76,7 @@ public class Main {
 
         // System.out.println("\nExecution with debugger\n");
         // program.runWithDebugger();
+         */
     }
+
 }

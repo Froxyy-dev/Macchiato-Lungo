@@ -1,42 +1,43 @@
 package macchiato.Commands.Instructions;
 
+import macchiato.Commands.Declarations.Declaration;
+import macchiato.Context.Context;
 import macchiato.Runtime.Contractor;
-import macchiato.Commands.Declarations.VariableDeclaration;
 import macchiato.Exceptions.MacchiatoException;
-import macchiato.Context.VariableFrame;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class Block extends Instruction {
 
-    private final VariableDeclaration[] variableDeclarations;
-    private final Instruction[] instructions;
+    private final ArrayList<Declaration> declarations;
+    private final ArrayList<Instruction> instructions;
 
-    public Block(VariableDeclaration[] variableDeclarations,
-                 Instruction[] instructions) {
-        this.variableDeclarations = variableDeclarations;
+    public Block(ArrayList<Declaration> declarations,
+                 ArrayList<Instruction> instructions) {
+        this.declarations = declarations;
         this.instructions = instructions;
     }
 
     @Override
-    public void execute(ArrayDeque<VariableFrame> variableFrames,
+    public void execute(ArrayDeque<Context> contexts,
                         Contractor contractor) throws MacchiatoException {
         // Tworzymy nową ramkę na zmienne na podstawie poprzedniej.
-        VariableFrame newVariableFrame = variableFrames.getLast().copy();
-        variableFrames.add(newVariableFrame);
+        Context newContext = new Context(contexts.getLast());
+        contexts.add(newContext);
 
         // Deklarujemy zmienne.
-        for (VariableDeclaration variableDeclaration : variableDeclarations) {
-            contractor.executeCommand(variableDeclaration, variableFrames);
+        for (Declaration declaration : declarations) {
+            contractor.executeCommand(declaration, contexts);
         }
 
         // Wykonujemy instrukcje.
         for (Instruction instruction : instructions) {
-            contractor.executeCommand(instruction, variableFrames);
+            contractor.executeCommand(instruction, contexts);
         }
 
         // Wykonujemy czynności związane z końcem bloku.
-        contractor.executeEndBlock(variableFrames);
+        contractor.executeEndBlock(contexts);
     }
 
     @Override

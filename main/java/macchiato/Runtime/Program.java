@@ -1,9 +1,7 @@
-package macchiato.Helpers;
+package macchiato.Runtime;
 
 import macchiato.Commands.Instructions.Block;
-import macchiato.Context.VariableFrame;
-import macchiato.Runtime.Debugger;
-import macchiato.Runtime.Runner;
+import macchiato.Context.Context;
 import macchiato.Exceptions.MacchiatoException;
 
 import java.util.ArrayDeque;
@@ -20,15 +18,15 @@ public class Program {
     // Funkcja wykonuje program bez odpluskiwacza.
     public void run() {
         //Stos ramek ze zmiennymi widocznymi w danym bloku.
-        ArrayDeque<VariableFrame> variableFrames = new ArrayDeque<>();
-        variableFrames.add(new VariableFrame());
+        ArrayDeque<Context> contexts = new ArrayDeque<>();
+        contexts.add(new Context());
 
         Runner runner = new Runner();
 
         // Przechwytujemy błąd wykonania.
         try {
-            runner.executeCommand(block, variableFrames);
-            variableFrames.removeLast();
+            runner.executeCommand(block, contexts);
+            contexts.removeLast();
 
             System.out.println("Program ended successfully.");
         }
@@ -40,19 +38,19 @@ public class Program {
     // Funkcja wykonuje program z odpluskiwaczem.
     public void runWithDebugger() {
         //Stos ramek ze zmiennymi widocznymi w danym bloku.
-        ArrayDeque<VariableFrame> variableFrames = new ArrayDeque<>();
-        variableFrames.add(new VariableFrame());
+        ArrayDeque<Context> contexts = new ArrayDeque<>();
+        contexts.add(new Context());
 
         Debugger debugger = new Debugger();
 
         // Przechwytujemy błąd wykonania.
         try {
-            debugger.executeCommand(block, variableFrames);
+            debugger.executeCommand(block, contexts);
 
             // Po zakończeniu wykonania czekamy na koniec działania debuggera.
             debugger.waitForExit();
 
-            variableFrames.removeLast();
+            contexts.removeLast();
         }
         catch (MacchiatoException macchiatoException) {
             System.out.println("Program execution failed.");

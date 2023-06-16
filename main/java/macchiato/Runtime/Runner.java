@@ -2,7 +2,7 @@ package macchiato.Runtime;
 
 import macchiato.Commands.Command;
 import macchiato.Exceptions.MacchiatoException;
-import macchiato.Context.VariableFrame;
+import macchiato.Context.Context;
 
 import java.util.ArrayDeque;
 
@@ -16,34 +16,34 @@ public class Runner extends Contractor {
     }
 
     @Override
-    public void executeEndBlock(ArrayDeque<VariableFrame> variableFrames) {
+    public void executeEndBlock(ArrayDeque<Context> contexts) {
         // Zdejmujemy ze stosu ostatnią ramkę i przepisujemy zmienne, które
         // zostały w niej zmienione (ale nie zadeklarowane) do przedostaniej
         // ramki.
-        VariableFrame lastFrame = variableFrames.removeLast();
-        variableFrames.getLast().rewrite(lastFrame);
+        Context lastContext = contexts.removeLast();
+        contexts.getLast().rewrite(lastContext);
 
         // Sprawdzamy, czy właśnie wykonaliśmy ostatni blok, jeśli tak to
         // wypisujemy końcowe wartościowanie zmiennych na standardowe wyjście.
-        if (variableFrames.size() == 1) {
-            System.out.println("Final variable values: ");
-            System.out.println(lastFrame);
+        if (contexts.size() == 1) {
+            System.out.println("Program ended.");
+            System.out.println(lastContext);
         }
     }
 
     @Override
     public void executeCommand(Command command,
-           ArrayDeque<VariableFrame> variableFrames) throws MacchiatoException {
+                               ArrayDeque<Context> contexts) throws MacchiatoException {
         try {
-            command.execute(variableFrames, this);
+            command.execute(contexts, this);
         }
         catch (MacchiatoException macchiatoException) {
-            // Sprawdzamy czy wyjątek został już obsłużony, jak tak to 
+            // Sprawdzamy czy wyjątek został już obsłużony, jak tak to
             // rzucamy go ponownie.
             if (errorHandled) {
                 throw macchiatoException;
             }
-            
+
             // Jeżeli wystąpi błąd wykonania, to:
             // 1. Wypisujemy powód, przez który wystąpił.
             System.out.println("Exception which occurred:");
@@ -54,9 +54,7 @@ public class Runner extends Contractor {
             command.print();
 
             // 3. Wypisujemy wartościowanie zmiennych widocznych w bloku.
-            System.out.println("Variable values in a block which caused an " +
-                    "exception: ");
-            System.out.println(variableFrames.getLast());
+            System.out.println(contexts.getLast().toString());
 
             // 4. Ustawiamy flagę w przypadku wystąpienia błędu i rzucamy 
             // wyjątek.

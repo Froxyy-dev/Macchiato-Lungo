@@ -1,6 +1,6 @@
 package macchiato.Commands.Declarations;
 
-import macchiato.Commands.Command;
+import macchiato.Context.Context;
 import macchiato.Runtime.Contractor;
 import macchiato.Expressions.Expression;
 import macchiato.Exceptions.MacchiatoException;
@@ -8,7 +8,7 @@ import macchiato.Context.VariableFrame;
 
 import java.util.ArrayDeque;
 
-public class VariableDeclaration extends Command {
+public class VariableDeclaration extends Declaration {
 
     private final char variable;
     private final Expression expression;
@@ -19,9 +19,9 @@ public class VariableDeclaration extends Command {
     }
 
     @Override
-    public void execute(ArrayDeque<VariableFrame> variableFrames,
+    public void execute(ArrayDeque<Context> contexts,
                         Contractor contractor) throws MacchiatoException {
-        VariableFrame variableFrame = variableFrames.getLast();
+        VariableFrame variableFrame = contexts.getLast().getVariableFrame();
 
         int computationResult = expression.compute(variableFrame);
 

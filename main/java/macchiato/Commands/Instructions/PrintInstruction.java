@@ -1,5 +1,6 @@
 package macchiato.Commands.Instructions;
 
+import macchiato.Context.Context;
 import macchiato.Runtime.Contractor;
 import macchiato.Expressions.Expression;
 import macchiato.Exceptions.MacchiatoException;
@@ -16,9 +17,10 @@ public class PrintInstruction extends Instruction {
     }
 
     @Override
-    public void execute(ArrayDeque<VariableFrame> variableFrames,
+    public void execute(ArrayDeque<Context> contexts,
                         Contractor contractor) throws MacchiatoException {
-        int result = expression.compute(variableFrames.getLast());
+        VariableFrame variableFrame = contexts.getLast().getVariableFrame();
+        int result = expression.compute(variableFrame);
 
         System.out.println(result);
     }

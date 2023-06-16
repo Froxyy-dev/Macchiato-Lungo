@@ -1,5 +1,6 @@
 package macchiato.Commands.Instructions;
 
+import macchiato.Context.Context;
 import macchiato.Runtime.Contractor;
 import macchiato.Expressions.Expression;
 import macchiato.Exceptions.MacchiatoException;
@@ -18,9 +19,9 @@ public class VariableAssignment extends Instruction {
     }
 
     @Override
-    public void execute(ArrayDeque<VariableFrame> variableFrames,
+    public void execute(ArrayDeque<Context> contexts,
                         Contractor contractor) throws MacchiatoException {
-        VariableFrame variableFrame = variableFrames.getLast();
+        VariableFrame variableFrame = contexts.getLast().getVariableFrame();
 
         int computationResult = expression.compute(variableFrame);
 

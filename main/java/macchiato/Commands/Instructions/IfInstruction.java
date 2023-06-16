@@ -1,24 +1,26 @@
 package macchiato.Commands.Instructions;
 
+import macchiato.Context.Context;
 import macchiato.Runtime.Contractor;
 import macchiato.Expressions.Expression;
 import macchiato.Exceptions.MacchiatoException;
 import macchiato.Context.VariableFrame;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class IfInstruction extends Instruction {
 
     private final Expression operand1;
     private final Expression operand2;
     private final String operator;
-    private final Instruction[] instructionsIfFulfilled;
-    private final Instruction[] instructionsIfNotFulfilled;
+    private final ArrayList<Instruction> instructionsIfFulfilled;
+    private final ArrayList<Instruction> instructionsIfNotFulfilled;
 
     public IfInstruction(Expression operand1, String operator,
                          Expression operand2,
-                         Instruction[] instructionsIfFulfilled,
-                         Instruction[] instructionsIfNotFulfilled) {
+                         ArrayList<Instruction> instructionsIfFulfilled,
+                         ArrayList<Instruction> instructionsIfNotFulfilled) {
         this.operand1 = operand1;
         this.operator = operator;
         this.operand2 = operand2;
@@ -26,25 +28,15 @@ public class IfInstruction extends Instruction {
         this.instructionsIfNotFulfilled = instructionsIfNotFulfilled;
     }
 
-    // Konstruktor, gdy pomijamy część else <instrukcje>
-    public IfInstruction(Expression operand1, String operator,
-                         Expression operand2,
-                         Instruction[] instructionsIfFulfilled) {
-        this.operand1 = operand1;
-        this.operator = operator;
-        this.operand2 = operand2;
-        this.instructionsIfFulfilled = instructionsIfFulfilled;
-        this.instructionsIfNotFulfilled = new Instruction[]{};
-    }
-
     @Override
-    public void execute(ArrayDeque<VariableFrame> variableFrames,
+    public void execute(ArrayDeque<Context> contexts,
                         Contractor contractor) throws MacchiatoException {
         // Wyliczamy wyrażenia.
-        int result1 = operand1.compute(variableFrames.getLast());
-        int result2 = operand2.compute(variableFrames.getLast());
+        VariableFrame variableFrame = contexts.getLast().getVariableFrame();
+        int result1 = operand1.compute(variableFrame);
+        int result2 = operand2.compute(variableFrame);
 
-        Instruction[] instructionsToExecute;
+        ArrayList<Instruction> instructionsToExecute;
 
         // Sprawdzamy warunek i ustawiamy odpowiednie instrukcje.
         if (conditionFulfilled(result1, result2, operator)) {
@@ -56,7 +48,7 @@ public class IfInstruction extends Instruction {
 
         // Wykonujemy instrukcje.
         for (Instruction instruction : instructionsToExecute) {
-            contractor.executeCommand(instruction, variableFrames);
+            contractor.executeCommand(instruction, contexts);
         }
     }
 
@@ -70,7 +62,7 @@ public class IfInstruction extends Instruction {
     }
 
     private boolean conditionFulfilled(int computation1, int computation2,
-                                    String operator) throws MacchiatoException {
+                                       String operator) throws MacchiatoException {
         switch (operator) {
             case "=" -> {
                 return computation1 == computation2;
@@ -91,7 +83,7 @@ public class IfInstruction extends Instruction {
                 return computation1 >= computation2;
             }
             default ->
-                 throw new MacchiatoException("Incorrect comparison operator.");
+                    throw new MacchiatoException("Incorrect comparison operator.");
         }
     }
 }
