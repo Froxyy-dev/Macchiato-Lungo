@@ -1,7 +1,7 @@
 package macchiato.Expressions;
 
 import macchiato.Exceptions.MacchiatoException;
-import macchiato.Helpers.VariableFrame;
+import macchiato.Context.VariableFrame;
 
 public abstract class BinaryExpression extends Expression {
 

@@ -1,6 +1,6 @@
 package macchiato.Expressions;
 
-import macchiato.Helpers.VariableFrame;
+import macchiato.Context.VariableFrame;
 
 public class Constant extends Expression {
 

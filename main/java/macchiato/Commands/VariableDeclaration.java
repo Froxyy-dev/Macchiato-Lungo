@@ -3,7 +3,7 @@ package macchiato.Commands;
 import macchiato.Contractors.Contractor;
 import macchiato.Expressions.Expression;
 import macchiato.Exceptions.MacchiatoException;
-import macchiato.Helpers.VariableFrame;
+import macchiato.Context.VariableFrame;
 
 import java.util.ArrayDeque;
 

@@ -2,7 +2,7 @@ package macchiato.Commands;
 
 import macchiato.Contractors.Contractor;
 import macchiato.Exceptions.MacchiatoException;
-import macchiato.Helpers.VariableFrame;
+import macchiato.Context.VariableFrame;
 
 import java.util.ArrayDeque;
 
