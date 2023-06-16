@@ -1,6 +1,6 @@
 package macchiato.Commands.Instructions;
 
-import macchiato.Contractors.Contractor;
+import macchiato.Runtime.Contractor;
 import macchiato.Expressions.Expression;
 import macchiato.Exceptions.MacchiatoException;
 import macchiato.Context.VariableFrame;

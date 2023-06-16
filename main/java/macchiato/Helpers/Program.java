@@ -2,8 +2,8 @@ package macchiato.Helpers;
 
 import macchiato.Commands.Instructions.Block;
 import macchiato.Context.VariableFrame;
-import macchiato.Contractors.Debugger;
-import macchiato.Contractors.Runner;
+import macchiato.Runtime.Debugger;
+import macchiato.Runtime.Runner;
 import macchiato.Exceptions.MacchiatoException;
 
 import java.util.ArrayDeque;

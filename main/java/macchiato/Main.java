@@ -1,7 +1,7 @@
 package macchiato;
 
 import macchiato.Commands.Instructions.*;
-import macchiato.Commands.VariableDeclaration;
+import macchiato.Commands.Declarations.VariableDeclaration;
 import macchiato.Expressions.*;
 
 import macchiato.Helpers.Program;
