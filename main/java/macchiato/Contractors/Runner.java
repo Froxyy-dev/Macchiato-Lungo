@@ -27,7 +27,7 @@ public class Runner extends Contractor {
         // wypisujemy końcowe wartościowanie zmiennych na standardowe wyjście.
         if (variableFrames.size() == 1) {
             System.out.println("Final variable values: ");
-            lastFrame.print();
+            System.out.println(lastFrame);
         }
     }
 
@@ -56,7 +56,7 @@ public class Runner extends Contractor {
             // 3. Wypisujemy wartościowanie zmiennych widocznych w bloku.
             System.out.println("Variable values in a block which caused an " +
                     "exception: ");
-            variableFrames.getLast().print();
+            System.out.println(variableFrames.getLast());
 
             // 4. Ustawiamy flagę w przypadku wystąpienia błędu i rzucamy 
             // wyjątek.

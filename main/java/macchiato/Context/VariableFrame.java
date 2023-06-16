@@ -2,53 +2,46 @@ package macchiato.Context;
 
 import macchiato.Exceptions.MacchiatoException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class VariableFrame {
 
-    private final int[] variableValues;
-    private final int[] variableInitialized; // Przyjmuje wartości ze zbioru
-    // {0, 1, 2}. Oznaczają one:
-    // 0 - zmienna niezainicjalizowana;
-    // 1 - zmienna zainicjalizowana we wcześniejszym bloku;
-    // 2 - zmienna zainicjalizowana w tym bloku.
+    public final Map<Character, Integer> variableValues;
+    public final Map<Character, Boolean> variableInitialized;
 
     public VariableFrame() {
-        variableValues = new int[26];
-        variableInitialized = new int[26];
+        variableValues = new HashMap<>();
+        variableInitialized = new HashMap<>();
     }
 
     public void initializeVariable(char variable, int value)
             throws MacchiatoException {
-        int variableToChange = mapper(variable);
-
-        if (variableInitialized[variableToChange] == 2) {
+        if (variableInitialized.getOrDefault(variable, false)) {
             throw new MacchiatoException(variable + " is already initialized.");
         }
         else {
-            variableValues[variableToChange] = value;
-            variableInitialized[variableToChange] = 2;
+            variableValues.put(variable, value);
+            variableInitialized.put(variable, true);
         }
     }
 
     public void setVariableValue(char variable, int newValue)
             throws MacchiatoException {
-        int variableToChange = mapper(variable);
-
-        if (variableInitialized[variableToChange] == 0) {
+        if (!variableInitialized.containsKey(variable)) {
             throw new MacchiatoException(variable + " is not initialized.");
         }
         else {
-            variableValues[variableToChange] = newValue;
+            variableValues.put(variable, newValue);
         }
     }
 
     public int getVariableValue(char variable) throws MacchiatoException {
-        int variableToReturn = mapper(variable);
-
-        if (variableInitialized[variableToReturn] == 0) {
+        if (!variableInitialized.containsKey(variable)) {
             throw new MacchiatoException(variable + " is not initialized.");
         }
         else {
-            return variableValues[variableToReturn];
+            return variableValues.get(variable);
         }
     }
 
@@ -56,11 +49,9 @@ public class VariableFrame {
     public VariableFrame copy() {
         VariableFrame newFrame = new VariableFrame();
 
-        for (int i=0; i<26; i++) {
-            if (variableInitialized[i] != 0) {
-                newFrame.variableInitialized[i] = 1;
-                newFrame.variableValues[i] = variableValues[i];
-            }
+        for (Character variable : variableInitialized.keySet()) {
+            newFrame.variableValues.put(variable, variableValues.get(variable));
+            newFrame.variableInitialized.put(variable, false);
         }
 
         return newFrame;
@@ -68,35 +59,23 @@ public class VariableFrame {
 
     // Funkcja przepisuje ramkę zdejmowaną ze stosu.
     public void rewrite(VariableFrame variableFrame) {
-        for (int i=0; i<26; i++) {
-            // Sprawdzamy, czy dana zmienna już była wcześniej oraz
-            // czy nie została zainicjalizowana ponownie.
-            if (variableInitialized[i] != 0 &&
-                    variableFrame.variableInitialized[i] != 2) {
-                variableValues[i] = variableFrame.variableValues[i];
+        for (Character variable : variableInitialized.keySet()) {
+            if (!variableFrame.variableInitialized.get(variable)) {
+                variableValues.put(variable,
+                        variableFrame.variableValues.get(variable));
             }
         }
     }
 
-    // Funkcja mapuje znak na liczbę całkowitą.
-    private int mapper(char c) throws MacchiatoException {
-        int variable = Integer.parseInt(String.valueOf(c - 'a'));
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Variable values:\n");
 
-        if (variable >= 26 || variable < 0) {
-            throw new MacchiatoException("Incorrect variable " + c + ".");
-        }
-        else {
-            return variable;
-        }
-    }
-
-    public void print() {
-        for (int i=0; i<26; i++) {
-            if(variableInitialized[i] != 0) {
-                System.out.println((char)(i + 'a') + " = " + variableValues[i]);
-            }
+        for (Character variable : variableInitialized.keySet()) {
+            stringBuilder.append(variable).append(" = ")
+                    .append(variableValues.get(variable));
+            stringBuilder.append("\n");
         }
 
-        System.out.println();
+        return stringBuilder.toString();
     }
 }
