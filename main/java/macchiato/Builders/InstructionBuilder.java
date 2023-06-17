@@ -30,7 +30,7 @@ public class InstructionBuilder {
     }
 
     public InstructionBuilder invoke(String procedureName,
-                                           List<Expression> arguments) {
+                                     List<Expression> arguments) {
         instructions.add(new InvokeProcedure(procedureName,
                 new ArrayList<>(arguments)));
         return this;

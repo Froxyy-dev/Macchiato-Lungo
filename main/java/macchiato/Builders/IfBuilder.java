@@ -23,7 +23,7 @@ public class IfBuilder extends Builder {
     }
 
     public IfBuilder instructionsIfFulfilled(ArrayList<Instruction>
-                                                  instructionsIfFulfilled) {
+                                                     instructionsIfFulfilled) {
         this.instructionsIfFulfilled = instructionsIfFulfilled;
         return this;
     }

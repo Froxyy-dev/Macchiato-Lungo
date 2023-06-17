@@ -22,8 +22,8 @@ public class DeclarationBuilder {
     }
 
     public DeclarationBuilder declareProcedure(String procedureName,
-                              List<Character> parameters,
-                              Block procedureContent) {
+                                               List<Character> parameters,
+                                               Block procedureContent) {
         declarations.add(new ProcedureDeclaration(procedureName,
                 new ArrayList<>(parameters),
                 procedureContent));

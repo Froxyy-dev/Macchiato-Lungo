@@ -17,7 +17,7 @@ public class ProcedureDeclaration extends Declaration {
                                 ArrayList<Character> parameters,
                                 Block procedureContent) {
         this.procedure = new Procedure(procedureName, parameters,
-                                       procedureContent);
+                procedureContent);
     }
 
     @Override

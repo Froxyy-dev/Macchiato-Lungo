@@ -30,7 +30,7 @@ public class Main {
                         .instructions(
                             new InstructionBuilder()
                             .print(Addition.of(VariableExpression.named('a'),
-                            VariableExpression.named('x')))
+                                VariableExpression.named('x')))
                             .build()
                         )
                         .build()

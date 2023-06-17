@@ -30,7 +30,7 @@ public class InvokeProcedure extends Instruction {
         if(!lastContext.containsProcedure(procedureName)) {
             throw new MacchiatoException(procedureName + "is not declared.");
         }
-        
+
         Procedure procedure = lastContext.getProcedure(procedureName);
 
         if (procedure.getParameters().size() != arguments.size()) {
