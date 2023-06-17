@@ -26,7 +26,7 @@ public class Block extends Instruction {
         Context newContext = new Context(contexts.getLast());
         contexts.add(newContext);
 
-        // Deklarujemy zmienne.
+        // Deklarujemy zmienne i procedury.
         for (Declaration declaration : declarations) {
             contractor.executeCommand(declaration, contexts);
         }
