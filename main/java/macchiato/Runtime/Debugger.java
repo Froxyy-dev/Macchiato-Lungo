@@ -39,14 +39,15 @@ public class Debugger extends Contractor{
         // Zmniejszamy liczbę instrukcji, które mamy wykonać.
         stepsToMake--;
 
-        // Zdejmujemy ze stosu ostatnią ramkę i przepisujemy zmienne, które
-        // zostały w niej zmienione (ale nie zadeklarowane) do przedostaniej
-        // ramki.
+        // Zdejmujemy ze stosu ostatnią ramkę i przepisujemy zmienne oraz
+        // procedury, które zostały w niej zmienione (ale nie zadeklarowane)
+        // do przedostaniej ramki.
         Context lastContext = contexts.removeLast();
         contexts.getLast().rewrite(lastContext);
 
         // Sprawdzamy, czy właśnie wykonaliśmy ostatni blok, jeśli tak to
-        // wypisujemy końcowe wartościowanie zmiennych na standardowe wyjście.
+        // wypisujemy końcowe wartościowanie zmiennych i nagłówki procedur na
+        // standardowe wyjście.
         if (contexts.size() == 1) {
             System.out.println("Program ended.");
             System.out.println(lastContext);
@@ -85,8 +86,9 @@ public class Debugger extends Contractor{
             System.out.println("Exception was caused by:");
             command.print();
 
-            // 3. Wypisujemy wartościowanie zmiennych widocznych w bloku.
-            System.out.println(contexts.getLast().toString());
+            // 3. Wypisujemy wartościowanie zmiennych oraz procedur
+            // widocznych w bloku.
+            System.out.println(contexts.getLast());
 
             // 4. Ustawiamy flagę w przypadku wystąpienia błędu i rzucamy
             // wyjątek.
@@ -165,16 +167,12 @@ public class Debugger extends Contractor{
                 // Ustawiamy ilość kroków, która była równa 0.
                 stepsToMake = number;
             }
-            case 'd' -> {
-                display(number, contexts);
-            }
+            case 'd' -> display(number, contexts);
             case 'e' -> {
                 System.out.println("Debugger ended successfully.");
                 System.exit(0);
             }
-            case 'm' -> {
-                writeToFile(pathToFile, contexts.getLast().toString());
-            }
+            case 'm' -> writeToFile(pathToFile, contexts.getLast().toString());
             default -> System.out.println("Incorrect debugger command.");
         }
     }

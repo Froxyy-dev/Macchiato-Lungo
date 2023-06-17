@@ -22,7 +22,7 @@ public class Block extends Instruction {
     @Override
     public void execute(ArrayDeque<Context> contexts,
                         Contractor contractor) throws MacchiatoException {
-        // Tworzymy nową ramkę na zmienne na podstawie poprzedniej.
+        // Tworzymy nową ramkę na zmienne i procedury na podstawie poprzedniej.
         Context newContext = new Context(contexts.getLast());
         contexts.add(newContext);
 

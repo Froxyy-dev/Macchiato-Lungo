@@ -28,7 +28,6 @@ public class ForLoop extends Instruction {
 
         int cyclesNumber = expression.compute(contexts.getLast().getVariableFrame());
 
-        // Tworzymy nową ramkę na zmienne na podstawie poprzedniej.
         Context newContext = new Context(contexts.getLast());
         contexts.add(newContext);
 
@@ -44,9 +43,6 @@ public class ForLoop extends Instruction {
             }
         }
 
-        // Zdejmujemy ze stosu ostatnią ramkę i przepisujemy zmienne, które
-        // zostały w niej zmienione (ale nie zadeklarowane) do przedostaniej
-        // ramki.
         Context lastContext = contexts.removeLast();
         contexts.getLast().rewrite(lastContext);
     }
