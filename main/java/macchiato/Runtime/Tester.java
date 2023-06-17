@@ -44,14 +44,15 @@ public class Tester extends Contractor {
     @Override
     public void executeEndBlock(ArrayDeque<Context> contexts)
             throws MacchiatoException {
-        // Zdejmujemy ze stosu ostatnią ramkę i przepisujemy zmienne, które
-        // zostały w niej zmienione (ale nie zadeklarowane) do przedostaniej
-        // ramki.
+        // Zdejmujemy ze stosu ostatnią ramkę i przepisujemy zmienne oraz
+        // procedury, które zostały w niej zmienione (ale nie zadeklarowane)
+        // do przedostaniej ramki.
         Context lastContext = contexts.removeLast();
         contexts.getLast().rewrite(lastContext);
 
         // Sprawdzamy, czy właśnie wykonaliśmy ostatni blok, jeśli tak to
-        // wypisujemy końcowe wartościowanie zmiennych na standardowe wyjście.
+        // wypisujemy końcowe wartościowanie zmiennych i nagłówki procedur na
+        // standardowe wyjście.
         if (contexts.size() == 1) {
             stringBuilder.append(lastContext);
         }

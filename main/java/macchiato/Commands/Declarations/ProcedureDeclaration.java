@@ -8,6 +8,8 @@ import macchiato.Runtime.Contractor;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProcedureDeclaration extends Declaration {
 
@@ -23,6 +25,14 @@ public class ProcedureDeclaration extends Declaration {
     @Override
     public void execute(ArrayDeque<Context> contexts, Contractor contractor)
             throws MacchiatoException {
+
+        ArrayList<Character> parameters = procedure.getParameters();
+        Set<Character> distinctParameters = new HashSet<>(parameters);
+
+        if (distinctParameters.size() != parameters.size()) {
+            throw new MacchiatoException("Parameter names are not different.");
+        }
+
         contexts.getLast().getProcedureFrame().declareProcedure(procedure);
     }
 

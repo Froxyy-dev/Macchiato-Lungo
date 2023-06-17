@@ -27,21 +27,25 @@ public class InvokeProcedure extends Instruction {
                         Contractor contractor) throws MacchiatoException {
         Context lastContext = contexts.getLast();
 
+        // Sprawdzamy, czy procedura jest zadeklarowana.
         if(!lastContext.containsProcedure(procedureName)) {
             throw new MacchiatoException(procedureName + "is not declared.");
         }
 
         Procedure procedure = lastContext.getProcedure(procedureName);
 
+        // Sprawdzamy, czy liczba parametrów się zgadza.
         if (procedure.getParameters().size() != arguments.size()) {
             throw new MacchiatoException("Number of arguments is not correct.");
         }
 
+        // Wyliczamy wartości kolejnych argumentów.
         ArrayList<Integer> argumentsValue = new ArrayList<>();
         for (Expression expression : arguments) {
             argumentsValue.add(expression.compute(lastContext.getVariableFrame()));
         }
 
+        // Inicjalizujemy parametry procedury.
         Context newContext = new Context(lastContext);
         VariableFrame newVariableFrame = newContext.getVariableFrame();
 
@@ -52,6 +56,7 @@ public class InvokeProcedure extends Instruction {
 
         contexts.add(newContext);
 
+        // Wywołujemy procedurę.
         contractor.executeCommand(procedure.getProcedureContent(), contexts);
 
         Context previousContext = contexts.removeLast();
